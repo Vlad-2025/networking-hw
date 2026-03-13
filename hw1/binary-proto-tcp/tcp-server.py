@@ -41,6 +41,9 @@ class State:
   def list(self):
     return dict(self.resources)
 
+  def count(self):
+    return len(self.resources)
+
 
 state = State()
 
@@ -61,6 +64,9 @@ def process_command(data):
       payload = 'key was not found'
   elif request.command == 'list':
     payload = state.list()
+  elif request.command == 'count':
+    payload  = state.count()
+
   stream = io.BytesIO()
   pickle.dump(Response(payload), stream)
   serialized_payload = stream.getvalue()

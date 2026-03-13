@@ -31,6 +31,10 @@ class State:
         with self.lock:
             return dict(self.data)
 
+    def count(self):
+        with self.lock:
+            return len(self.data)
+
 state = State()
 
 def process_command(command):
@@ -43,9 +47,12 @@ def process_command(command):
 
     if cmd == "list" and len(parts) == 1:
         return state.list()
+    elif cmd == "count" and len(parts) == 1:
+        return state.count()
 
     if len(parts) < 2:
         return "Invalid command format"
+
 
     key = parts[1]
     
@@ -68,8 +75,9 @@ def handle_client(client_socket):
 
                 command = data.decode('utf-8').strip()
                 response = process_command(command)
-                
-                response_data = f"{len(response)} {response}".encode('utf-8')
+
+                response_str = str(response)
+                response_data = f"{len(response_str)} {response_str}".encode('utf-8')
                 client_socket.sendall(response_data)
 
             except Exception as e:
