@@ -48,6 +48,12 @@ class State:
     self.resources.clear()
     return "All data deleted"
 
+  def update(self, key, new_value):
+    if key in self.resources:
+      self.resources[key] = new_value
+      return "Data updated"
+    return "Key is not in map!"
+
 
 state = State()
 
@@ -72,6 +78,8 @@ def process_command(data):
     payload = state.count()
   elif request.command == 'clear':
     payload = state.clear()
+  elif request.command == 'update':
+    payload = state.update(request.key, request.resource)
 
   stream = io.BytesIO()
   pickle.dump(Response(payload), stream)

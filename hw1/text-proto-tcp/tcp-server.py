@@ -40,6 +40,13 @@ class State:
             self.data.clear()
             return "All data deleted"
 
+    def update(self, key, new_value):
+        with self.lock:
+            if key in self.data:
+                self.data[key] = new_value
+                return "Data updated"
+            return "Key is not in map!"
+
 state = State()
 
 def process_command(command):
@@ -69,6 +76,14 @@ def process_command(command):
         return state.get(key)
     elif cmd == "remove" and len(parts) == 2:
         return state.remove(key)
+
+    if len(parts) < 3:
+        return "Invalid command format"
+
+    new_value = parts[2]
+
+    if cmd == "update" and len(parts) == 3:
+        return state.update(key, new_value)
     
     return "Invalid command"
 
