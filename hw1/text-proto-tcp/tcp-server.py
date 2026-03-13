@@ -26,14 +26,28 @@ class State:
                 return f"{key} removed"
             return "Key not found"
 
+
+    def list(self):
+        with self.lock:
+            return dict(self.data)
+
 state = State()
 
 def process_command(command):
     parts = command.split()
+
+    if len(parts) < 1:
+        return "Invalid command format"
+
+    cmd = parts[0]
+
+    if cmd == "list" and len(parts) == 1:
+        return state.list()
+
     if len(parts) < 2:
         return "Invalid command format"
 
-    cmd, key = parts[0], parts[1]
+    key = parts[1]
     
     if cmd == "add" and len(parts) > 2:
         return state.add(key, ' '.join(parts[2:]))

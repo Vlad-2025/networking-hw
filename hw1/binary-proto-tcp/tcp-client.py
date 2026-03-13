@@ -1,6 +1,7 @@
 import socket
 import pickle
 import io
+from idlelib.rpc import request_queue
 
 HOST = "127.0.0.1"  
 PORT = 3333  
@@ -19,7 +20,12 @@ class Request:
 def get_command(command):
     c = command.strip()
     items = c.split(' ')
-    request = Request(items[0], items[1], ' '.join(items[2:]))
+
+    if len(items) == 1:
+        request = Request(items[0], None)
+    else:
+        request = Request(items[0], items[1], ' '.join(items[2:]))
+
     stream = io.BytesIO()
     pickle.dump(request, stream)
     serialized_payload = stream.getvalue()

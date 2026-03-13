@@ -38,6 +38,10 @@ class State:
     else:
       return None
 
+  def list(self):
+    return dict(self.resources)
+
+
 state = State()
 
 def process_command(data):
@@ -55,6 +59,8 @@ def process_command(data):
     payload = state.get(request.key)
     if not payload:
       payload = 'key was not found'
+  elif request.command == 'list':
+    payload = state.list()
   stream = io.BytesIO()
   pickle.dump(Response(payload), stream)
   serialized_payload = stream.getvalue()
