@@ -35,8 +35,13 @@ def get_command(command):
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
     command = ''
-    while command.strip() != 'exit':
+    while command.strip() != 'exit' and command.strip() != 'quit':
         command = input('connected>')
+
+        if command.strip() in ('exit', 'quit'):
+            s.send(get_command(command))
+            break
+
         s.send(get_command(command))
         data = s.recv(BUFFER_SIZE)
         if not data:

@@ -38,7 +38,8 @@ def main():
 
         while True:
             command = input('client> ').strip()
-            if command.lower() == 'exit':
+            if command.lower() == 'exit' or command.lower() == 'quit':
+                s.sendall('quit'.encode('utf-8'))
                 break
 
             s.sendall(command.encode('utf-8'))

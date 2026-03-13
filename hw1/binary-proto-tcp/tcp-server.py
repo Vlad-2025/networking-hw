@@ -86,6 +86,8 @@ def process_command(data):
     payload = state.update(request.key, request.resource)
   elif request.command == 'pop':
     payload = state.pop(request.key)
+  elif request.command == 'quit':
+    return None
 
   stream = io.BytesIO()
   pickle.dump(Response(payload), stream)
@@ -112,6 +114,10 @@ def handle_client(client):
         full_data = full_data + binary_data
         remaining = remaining - len(binary_data)
       response = process_command(full_data)
+
+      if response is None:
+        break
+
       client.send(response)
 
 def accept(server):

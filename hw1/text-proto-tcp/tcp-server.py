@@ -69,6 +69,8 @@ def process_command(command):
         return state.count()
     elif cmd == "clear" and len(parts) == 1:
         return state.clear()
+    elif cmd == "quit" and len(parts) == 1:
+        return None
 
     if len(parts) < 2:
         return "Invalid command format"
@@ -105,6 +107,9 @@ def handle_client(client_socket):
 
                 command = data.decode('utf-8').strip()
                 response = process_command(command)
+
+                if response is None:
+                    break
 
                 response_str = str(response)
                 response_data = f"{len(response_str)} {response_str}".encode('utf-8')
