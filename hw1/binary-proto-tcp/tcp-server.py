@@ -44,6 +44,10 @@ class State:
   def count(self):
     return len(self.resources)
 
+  def clear(self):
+    self.resources.clear()
+    return "All data deleted"
+
 
 state = State()
 
@@ -65,7 +69,9 @@ def process_command(data):
   elif request.command == 'list':
     payload = state.list()
   elif request.command == 'count':
-    payload  = state.count()
+    payload = state.count()
+  elif request.command == 'clear':
+    payload = state.clear()
 
   stream = io.BytesIO()
   pickle.dump(Response(payload), stream)

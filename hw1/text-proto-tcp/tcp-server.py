@@ -35,6 +35,11 @@ class State:
         with self.lock:
             return len(self.data)
 
+    def clear(self):
+        with self.lock:
+            self.data.clear()
+            return "All data deleted"
+
 state = State()
 
 def process_command(command):
@@ -49,6 +54,8 @@ def process_command(command):
         return state.list()
     elif cmd == "count" and len(parts) == 1:
         return state.count()
+    elif cmd == "clear" and len(parts) == 1:
+        return state.clear()
 
     if len(parts) < 2:
         return "Invalid command format"
