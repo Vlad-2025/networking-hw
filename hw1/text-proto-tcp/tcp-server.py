@@ -47,6 +47,12 @@ class State:
                 return "Data updated"
             return "Key is not in map!"
 
+    def pop(self, key):
+        with self.lock:
+            if key in self.data:
+                return self.data.pop(key)
+            return "Key not in map"
+
 state = State()
 
 def process_command(command):
@@ -76,6 +82,8 @@ def process_command(command):
         return state.get(key)
     elif cmd == "remove" and len(parts) == 2:
         return state.remove(key)
+    elif cmd == "pop" and len(parts) == 2:
+        return state.pop(key)
 
     if len(parts) < 3:
         return "Invalid command format"

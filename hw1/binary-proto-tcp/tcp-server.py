@@ -54,6 +54,10 @@ class State:
       return "Data updated"
     return "Key is not in map!"
 
+  def pop(self, key):
+    if key in self.resources:
+      return self.resources.pop(key)
+    return "Key not in map!"
 
 state = State()
 
@@ -80,6 +84,8 @@ def process_command(data):
     payload = state.clear()
   elif request.command == 'update':
     payload = state.update(request.key, request.resource)
+  elif request.command == 'pop':
+    payload = state.pop(request.key)
 
   stream = io.BytesIO()
   pickle.dump(Response(payload), stream)
