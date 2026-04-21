@@ -68,6 +68,10 @@ while True:
             print("Nu esti conectat la server!")
             continue
 
+        if len(parti) < 2:
+            print("Trebuie specificate argumente pentru comanda PUBLISH")
+            continue
+
         raspuns = trimite_comanda(intrare)
         print(raspuns)
 
