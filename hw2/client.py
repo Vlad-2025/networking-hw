@@ -80,6 +80,16 @@ while True:
             print("Nu esti conectat la server!")
             continue
 
+        if len(parti) < 2:
+            print("Trebuie specificat un ID de mesaj")
+            continue
+
+        try:
+            int(parti[1])
+        except ValueError:
+            print("EROARE: ID-ul furnizat nu este un numar intreg!")
+            continue
+
         raspuns = trimite_comanda(intrare)
         print(raspuns)
 
