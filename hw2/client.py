@@ -64,14 +64,26 @@ while True:
             este_conectat = False
 
     elif comanda == 'PUBLISH':
+        if not este_conectat:
+            print("Nu esti conectat la server!")
+            continue
+
         raspuns = trimite_comanda(intrare)
         print(raspuns)
 
     elif comanda == 'DELETE':
+        if not este_conectat:
+            print("Nu esti conectat la server!")
+            continue
+
         raspuns = trimite_comanda(intrare)
         print(raspuns)
 
     elif comanda == 'LIST':
+        if not este_conectat:
+            print("Nu esti conectat la server!")
+            continue
+
         raspuns = trimite_comanda(intrare)
         print(raspuns)
 
