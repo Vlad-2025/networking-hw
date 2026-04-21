@@ -6,12 +6,12 @@ BUFFER_SIZE = 1024
 
 clienti_conectati = {}
 
-mesaje: dict = {}
+mesaje: dict[int, tuple[str, str]] = {}
 id_mesaj = 0 # incrementat cu 1 la fiecare mesaj
 
-def adauga_mesaj(mesaj: str) -> int:
+def adauga_mesaj(adresa_client:str, mesaj: str, ) -> int:
     global id_mesaj, mesaje
-    mesaje[id_mesaj] = mesaj
+    mesaje[id_mesaj] = (adresa_client, mesaj)
 
     id_curent = id_mesaj
     id_mesaj += 1
@@ -58,7 +58,7 @@ while True:
             if adresa_client in clienti_conectati:
                 if argumente:
                     # salvare mesaj
-                    id_returnat = adauga_mesaj(argumente)
+                    id_returnat = adauga_mesaj(adresa_client, argumente)
                     raspuns = f"OK: mesaj trimis cu ID-ul {id_returnat}"
 
                     for client in clienti_conectati:
@@ -72,7 +72,24 @@ while True:
                 raspuns = "EROARE: Nu sunteti conectat"
 
         elif comanda == 'DELETE':
-            raspuns = "EROARE: Comanda DELETE nu este inca implementata."
+            if adresa_client in clienti_conectati:
+                try:
+                    id_de_sters = int(argumente)
+                except ValueError:
+                    raspuns = "EROARE: ID-ul trebuie sa fie un numar intreg"
+                else:
+                    if id_de_sters in mesaje:
+                        autor, text = mesaje[id_de_sters]
+
+                        if autor == adresa_client:
+                            del mesaje[id_de_sters]
+                            raspuns = f"OK: mesajul {text} cu ID-ul {id_de_sters} a fost sters"
+                        else:
+                            raspuns = "EROARE: nu sunteti autorul acestui mesaj"
+                    else:
+                        raspuns = f"EROARE: mesajul cu ID-ul {id_de_sters} nu a fost gasit"
+            else:
+                raspuns = "EROARE: nu sunteti conectat"
 
         elif comanda == 'LIST':
             raspuns = "EROARE: Comanda LIST nu este inca implementata."
