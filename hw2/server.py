@@ -6,6 +6,18 @@ BUFFER_SIZE = 1024
 
 clienti_conectati = {}
 
+mesaje: dict = {}
+id_mesaj = 0 # incrementat cu 1 la fiecare mesaj
+
+def adauga_mesaj(mesaj: str) -> int:
+    global id_mesaj, mesaje
+    mesaje[id_mesaj] = mesaj
+
+    id_curent = id_mesaj
+    id_mesaj += 1
+
+    return id_curent
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_socket.bind((HOST, PORT))
 
@@ -43,7 +55,21 @@ while True:
                 raspuns = "EROARE: Nu esti conectat la server."
 
         elif comanda == 'PUBLISH':
-            raspuns = "EROARE: Comanda PUBLISH nu este inca implementata."
+            if adresa_client in clienti_conectati:
+                if argumente:
+                    # salvare mesaj
+                    id_returnat = adauga_mesaj(argumente)
+                    raspuns = f"OK: mesaj trimis cu ID-ul {id_returnat}"
+
+                    for client in clienti_conectati:
+                        if client != adresa_client:
+                            notificare = f"[MESAJ NOU]: {adresa_client}#{id_returnat}: {argumente}"
+                            server_socket.sendto(notificare.encode('utf-8'), client)
+
+                else:
+                    raspuns = "EROARE: comanda PUBLISH necesita parameterii"
+            else:
+                raspuns = "EROARE: Nu sunteti conectat"
 
         elif comanda == 'DELETE':
             raspuns = "EROARE: Comanda DELETE nu este inca implementata."
