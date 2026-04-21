@@ -92,7 +92,17 @@ while True:
                 raspuns = "EROARE: nu sunteti conectat"
 
         elif comanda == 'LIST':
-            raspuns = "EROARE: Comanda LIST nu este inca implementata."
+            if adresa_client in clienti_conectati:
+                lista_mesaje: list = []
+
+                for id_sender, (autor, text) in mesaje.items():
+                    if autor == adresa_client:
+                        lista_mesaje.append((id_sender, text))
+
+                raspuns = str(lista_mesaje)
+
+            else:
+                raspuns = "EROARE: nu sunteti conectat"
 
         else:
             raspuns = f"EROARE: Comanda '{comanda}' este necunoscuta. Comenzi valide: CONNECT, DISCONNECT, PUBLISH, DELETE, LIST"
