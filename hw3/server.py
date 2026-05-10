@@ -10,6 +10,8 @@ FILES_DIR = 'files'
 DEFAULT_USER = 'student'
 DEFAULT_PASSWORD = '1234'
 
+file_history = {}
+
 def ensure_files_dir():
     """Ensure files directory exists"""
     if not os.path.exists(FILES_DIR):
@@ -20,6 +22,15 @@ def ensure_files_dir():
 def authenticate(username, password):
     """Authenticate user"""
     return username == DEFAULT_USER and password == DEFAULT_PASSWORD
+
+def log_operation(filename: str, operation_type: str):
+    global file_history
+
+    # create new history if file is new
+    if filename not in file_history:
+        file_history[filename] = []
+
+    file_history[filename].append(operation_type)
 
 
 def handle_client(conn, addr):
@@ -68,6 +79,9 @@ def handle_client(conn, addr):
                         f.write(content)
                     
                     response = {'status': 'success', 'message': f'File {filename} created on server'}
+
+                    log_operation(filename, "create")
+
                     print(f"✓ File created: {filename}")
                 
                 elif command == 'upload':
@@ -79,6 +93,9 @@ def handle_client(conn, addr):
                         f.write(content)
                     
                     response = {'status': 'success', 'message': f'File {filename} uploaded'}
+
+                    log_operation(filename, "upload")
+
                     print(f"✓ File uploaded: {filename}")
                 
                 elif command == 'rename_file':
@@ -100,6 +117,10 @@ def handle_client(conn, addr):
                             'status': 'success',
                             'message': f"File {filename} renamed to {new_filename}"
                         }
+
+                        file_history[new_filename] = file_history.pop(filename, [])
+                        log_operation(new_filename, f"renamed from {filename}")
+
                         print(f"File renamed: {filename} -> {new_filename}")
 
 
@@ -122,6 +143,8 @@ def handle_client(conn, addr):
                             'message': text
                         }
 
+                        log_operation(filename, "read_file")
+
                 elif command == 'download':
 
                     filename = request.get('filename')
@@ -142,6 +165,8 @@ def handle_client(conn, addr):
                             'filename': filename,
                             'message': text
                         }
+
+                        log_operation(filename, "download")
 
                 elif command == 'edit_file':
 
@@ -165,9 +190,25 @@ def handle_client(conn, addr):
                             'message': new_text
                         }
 
+                        log_operation(filename, "edit_file")
+
                 elif command == 'see_file_operation_history':
-                    response = {'status': 'error', 'message': '❌ COMANDO NU ESTE IMPLEMENTATA!\nTrebuie implementata de student.'}
-                
+
+                    filename = request.get('filename')
+                    history = file_history.get(filename, [])
+
+                    if not history:
+                        response = {
+                            'status': 'success',
+                            'message': f"No history found for {filename}"
+                        }
+                    else:
+                        history_text = "\n".join(f"{i+1}. {op}" for i, op in enumerate(history))
+                        response = {
+                            'status': 'success',
+                            'message': history_text
+                        }
+
                 elif command == 'list_files':
                     files = os.listdir(FILES_DIR)
                     response = {'status': 'success', 'files': files}

@@ -246,14 +246,33 @@ class FTPClient:
         """STUDENT TASK: See file operation history on server"""
         print("\n📜 SEE FILE OPERATION HISTORY")
         print("-" * 40)
-        
-        command = {'command': 'see_file_operation_history'}
+
+        list_response = self.send_command({'command': 'list_files'})
+        if list_response['status'] == 'error':
+            print(f"✗ {list_response['message']}")
+            return
+
+        files = list_response['files']
+        if not files:
+            print("No files on server.")
+            return
+
+        for i, f in enumerate(files):
+            print(f"{i + 1}. {f}")
+
+        choice = input("Select a file (number): ")
+        filename = files[int(choice) - 1]
+
+        command = {
+            'command': 'see_file_operation_history',
+            'filename': filename
+        }
         response = self.send_command(command)
         
         if response['status'] == 'error':
             print(f" {response['message']}")
         else:
-            print(f"✓ {response['message']}")
+            print(f"✓ History for '{filename}':\n{response['message']}")
     
     def list_files(self):
         """List files on server"""
