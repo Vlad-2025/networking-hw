@@ -221,14 +221,26 @@ class FTPClient:
         """STUDENT TASK: Edit file on server"""
         print("\n🛠️  EDIT FILE (Server)")
         print("-" * 40)
-        
-        command = {'command': 'edit_file'}
+
+        filename = input("File to edit: ")
+        new_text = input("Enter new content:\n")
+
+        local_filepath = os.path.join(LOCAL_FILES_DIR, filename)
+
+        command = {
+            'command': 'edit_file',
+            'filename': filename,
+            'new_text': new_text
+        }
         response = self.send_command(command)
         
         if response['status'] == 'error':
             print(f" {response['message']}")
         else:
-            print(f"✓ {response['message']}")
+            print(f"{response['filename']}\n{response['message']}")
+
+            with open(local_filepath, 'w') as f:
+                f.write(new_text)
     
     def see_file_operation_history(self):
         """STUDENT TASK: See file operation history on server"""

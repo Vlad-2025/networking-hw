@@ -144,8 +144,27 @@ def handle_client(conn, addr):
                         }
 
                 elif command == 'edit_file':
-                    response = {'status': 'error', 'message': '❌ COMANDO NU ESTE IMPLEMENTATA!\nTrebuie implementata de student.'}
-                
+
+                    filename = request.get('filename')
+                    filepath = os.path.join(FILES_DIR, filename)
+
+                    new_text = request.get('new_text')
+
+                    if not os.path.exists(filepath):
+                        response = {
+                            'status': 'error',
+                            'message': f"File {filename} doenst exist!",
+                        }
+                    else:
+                        with open(filepath, 'w') as f:
+                            f.write(new_text)
+
+                        response = {
+                            'status': 'success',
+                            'filename': filename,
+                            'message': new_text
+                        }
+
                 elif command == 'see_file_operation_history':
                     response = {'status': 'error', 'message': '❌ COMANDO NU ESTE IMPLEMENTATA!\nTrebuie implementata de student.'}
                 
