@@ -177,8 +177,13 @@ class FTPClient:
         """STUDENT TASK: Read file content from server"""
         print("\n📖 READ FILE (Server)")
         print("-" * 40)
+
+        filename = input("Name of file to read: ")
         
-        command = {'command': 'read_file'}
+        command = {
+            'command': 'read_file',
+            'filename': filename
+        }
         response = self.send_command(command)
         
         if response['status'] == 'error':
