@@ -114,7 +114,7 @@ def handle_client(conn, addr):
                             'message': f'File {filename} doesnt exist!'
                         }
                     else:
-                        with open(filepath) as f:
+                        with open(filepath, 'r') as f:
                             text = f.read()
 
                         response = {
@@ -123,8 +123,26 @@ def handle_client(conn, addr):
                         }
 
                 elif command == 'download':
-                    response = {'status': 'error', 'message': '❌ COMANDO NU ESTE IMPLEMENTATA!\nTrebuie implementata de student.'}
-                
+
+                    filename = request.get('filename')
+                    filepath = os.path.join(FILES_DIR, filename)
+
+                    if not os.path.exists(filepath):
+                        response = {
+                            'status': 'error',
+                            'message': f"File {filename} doesnt exist"
+                        }
+
+                    else:
+                        with open(filepath, 'r') as f:
+                            text = f.read()
+
+                        response = {
+                            'status': 'success',
+                            'filename': filename,
+                            'message': text
+                        }
+
                 elif command == 'edit_file':
                     response = {'status': 'error', 'message': '❌ COMANDO NU ESTE IMPLEMENTATA!\nTrebuie implementata de student.'}
                 

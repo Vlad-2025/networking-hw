@@ -195,14 +195,27 @@ class FTPClient:
         """STUDENT TASK: Download file from server to local"""
         print("\n📥 DOWNLOAD FILE")
         print("-" * 40)
-        
-        command = {'command': 'download'}
+
+        filename = input("File to download: ")
+
+        command = {
+            'command': 'download',
+            'filename': filename
+        }
         response = self.send_command(command)
         
         if response['status'] == 'error':
             print(f" {response['message']}")
         else:
             print(f"✓ {response['message']}")
+
+            filename = response["filename"]
+            text = response["message"]
+
+            new_filepath = os.path.join(LOCAL_FILES_DIR, filename)
+
+            with open(new_filepath, 'w') as f:
+                f.write(text)
     
     def edit_file(self):
         """STUDENT TASK: Edit file on server"""
