@@ -149,14 +149,29 @@ class FTPClient:
         """STUDENT TASK: Rename a file on server"""
         print("\n✏️  RENAME FILE (Server)")
         print("-" * 40)
-        
-        command = {'command': 'rename_file'}
+
+        filename = input("Enter current file name: ")
+        new_filename = input("Enter new file name: ")
+
+        command = {
+            'command': 'rename_file',
+            'filename': filename,
+            'new_filename': new_filename
+        }
         response = self.send_command(command)
         
         if response['status'] == 'error':
             print(f" {response['message']}")
         else:
             print(f"✓ {response['message']}")
+
+            # rename locally
+            local_filepath = os.path.join(LOCAL_FILES_DIR, filename)
+            new_local_filepath = os.path.join(LOCAL_FILES_DIR, new_filename)
+
+            if os.path.exists(local_filepath):
+                os.rename(local_filepath, new_local_filepath)
+                print(f"Local file renamed: {filename} -> {new_filename}")
     
     def read_file(self):
         """STUDENT TASK: Read file content from server"""

@@ -82,8 +82,27 @@ def handle_client(conn, addr):
                     print(f"✓ File uploaded: {filename}")
                 
                 elif command == 'rename_file':
-                    response = {'status': 'error', 'message': '❌ COMANDO NU ESTE IMPLEMENTATA!\nTrebuie implementata de student.'}
-                
+
+                    filename = request.get('filename')
+                    new_filename = request.get('new_filename')
+
+                    filepath = os.path.join(FILES_DIR, filename)
+                    new_filepath = os.path.join(FILES_DIR, new_filename)
+
+                    if not os.path.exists(filepath):
+                        response = {
+                            'status': 'error',
+                            'message': f"File {filename} doesnt exist"
+                        }
+                    else:
+                        os.rename(filepath, new_filepath)
+                        response = {
+                            'status': 'success',
+                            'message': f"File {filename} renamed to {new_filename}"
+                        }
+                        print(f"File renamed: {filename} -> {new_filename}")
+
+
                 elif command == 'read_file':
                     response = {'status': 'error', 'message': '❌ COMANDO NU ESTE IMPLEMENTATA!\nTrebuie implementata de student.'}
                 
